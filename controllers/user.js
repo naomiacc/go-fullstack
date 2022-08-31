@@ -4,6 +4,7 @@ const User = require("../models/User");
 
 // pour l'enregistrement des utilisateurs
 exports.signup = (req, res, next) => {
+  console.log("signup", req);
   bcrypt
     .hash(req.body.password, 10) // on hache le mot de passe, on lui passe le mdp du corps de la requete, on hache 10 tours
     .then((hash) => {
@@ -22,6 +23,7 @@ exports.signup = (req, res, next) => {
 
 // pour connecter les utilisateurs existants et vérifier s'ils ont des identifiants valides
 exports.login = (req, res, next) => {
+  console.log("login", req);
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (user === null) {
@@ -29,10 +31,11 @@ exports.login = (req, res, next) => {
           .status(401)
           .json({ message: "Paire login/mot de passe incorrecte" });
       } else {
+        console.log("e");
         bcrypt
           // Nous utilisons la fonction compare de bcrypt pour comparer le mot de passe entré par l'utilisateur avec le hash enregistré dans la base de données
           .compare(req.body.password, user.password)
-          .then((valide) => {
+          .then((valid) => {
             // S'ils ne correspondent pas, nous renvoyons une erreur401 Unauthorized avec le même message que lorsque l’utilisateur n’a pas été trouvé, afin de ne pas laisser quelqu’un vérifier si une autre personne est inscrite sur notre site.
             if (!valid) {
               res
@@ -45,7 +48,7 @@ exports.login = (req, res, next) => {
                 // Nous utilisons la fonction sign de jsonwebtoken pour chiffrer un nouveau token.
                 // Ce token contient l'ID de l'utilisateur en tant que payload (les données encodées dans le token).
                 token: jwt.sign({ userId: user._id }, "RANDOM_TOKEN_SECRET", {
-                  expiresIn: "24h", // durée de chaque token, L'utilisateur devra donc se reconnecter au bout de 24 heures.
+                  expiresIn: "24h", // durée de chaque token, l'utilisateur devra donc se reconnecter au bout de 24 heures.
                 }),
               });
             }

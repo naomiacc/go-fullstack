@@ -14,11 +14,11 @@ const path = require("path");
 
 mongoose
   .connect(
-    "mongodb+srv://naomiacc:<Mango2104>@cluster0.ubmxhmv.mongodb.net/?retryWrites=true&w=majority",
+    "mongodb+srv://naomiacc:mongodb2104@cluster0.ubmxhmv.mongodb.net/?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+  .catch((e) => console.log(e));
 
 // middleware permettant de gérer la requête POST venant de l'application front-end, on a besoin d'en extraire le corps JSON
 // Express prend toutes les requêtes qui ont comme Content-Type application/json
@@ -43,8 +43,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
-app.use(bodyParser.json());
 
 //enregistrement des routes
 app.use("/api/stuff", stuffRoutes);

@@ -4,6 +4,7 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
+  console.log("authentification", req);
   try {
     // Nous utilisons donc la fonction split pour tout récupérer après l'espace dans le header
     const token = req.headers.authorization.split(" ")[1];

@@ -6,7 +6,7 @@ const multer = require("../middleware/multer-config");
 
 const stuffCtrl = require("../controllers/stuff");
 
-router.get("/", auth, stuffCtrl.getAllStuff);
+router.use(express.json());
 
 // Express met à disposition le  body  des requêtes interceptées directement sur l'objet req
 // Enregistrement des Things dans la base de données

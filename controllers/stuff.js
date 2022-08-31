@@ -3,27 +3,22 @@ const fs = require("fs"); // fs  signifie « file system » (soit « système de
 
 exports.createThing = (req, res, next) => {
   const thingObject = JSON.parse(req.body.thing);
+  console.log(thingObject);
   delete thingObject._id;
-  delete thingObject._userId;
   const thing = new Thing({
     ...thingObject,
-    userId: req.auth.userId,
     imageUrl: `${req.protocol}://${req.get("host")}/images/${
       req.file.filename
     }`,
   });
-
   thing
     .save()
-    .then(() => {
-      res.status(201).json({ message: "Objet enregistré !" });
-    })
-    .catch((error) => {
-      res.status(400).json({ error });
-    });
+    .then(() => res.status(201).json({ message: "Objet enregistré !" }))
+    .catch((error) => res.status(400).json({ error }));
 };
 
 exports.modifyThing = (req, res, next) => {
+  console.log("requete modif", req);
   // on crée un objet thingObject qui regarde si req.file existe ou non.
   // S'il existe, on traite la nouvelle image. s'il n'existe pas, on traite simplement l'objet entrant.
   const thingObject = req.file
@@ -55,6 +50,7 @@ exports.modifyThing = (req, res, next) => {
 };
 
 exports.deleteThing = (req, res, next) => {
+  console.log("requete delete", req);
   Thing.findOne({ _id: req.params.id })
     .then((thing) => {
       if (thing.userId != req.auth.userId) {
@@ -76,12 +72,14 @@ exports.deleteThing = (req, res, next) => {
 };
 
 exports.getOneThing = (req, res, next) => {
+  console.log("requete get One", req);
   Thing.findOne({ _id: req.params.id })
     .then((thing) => res.status(200).json(thing))
     .catch((error) => res.status(404).json({ error }));
 };
 
 exports.getAllThings = (req, res, next) => {
+  console.log("requete getAll", req);
   Thing.find()
     .then((things) => res.status(200).json(things))
     .catch((error) => res.status(400).json({ error }));
